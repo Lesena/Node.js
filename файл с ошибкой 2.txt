@@ -1,0 +1,91 @@
+module.exports = function(grunt) {
+
+  // Project configuration.
+  grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
+    uglify: {
+      beauty: {
+        options: {
+          mangle: false,
+          beautify: {
+            width: 150,
+            beautify: true,
+            comments:true,
+          },
+          compress: {
+              sequences:false,
+              conditionals:false,
+              booleans:false,
+              join_vars:false,
+              cascade:false,
+              hoist_vars:false,
+              hoist_funs:false,
+              dead_code:false,
+              unused:false,
+          }
+        },
+        files: {
+            'js/file1.js': ['js/file1.js']
+        }
+      },
+      min: {
+        src: 'js/file1.js',
+        dest: 'js/file1.min.js'
+      },
+    },
+    compass: {
+      clean: {
+        config:  'config.rg',
+        options: {
+          clean:true, 
+         }
+       },
+      dev: {
+        options: {
+          config: 'config.rb', 
+          environment: 'development',
+        }
+      },
+      prod: {
+        options: {
+          config: 'config.rb',  
+          environment: 'production'
+        }
+      },
+      watch: {
+        options: {
+          environment: 'development',
+          config: 'config.rb',  
+        }
+      }
+    },
+    watch: {
+        ugly: {
+          files: ['js/file1.js'],
+          tasks: ['uglify'],
+        },
+    },
+    concurrent: {
+      compass: ['compass:watch'],
+      ugly: ['watch']
+    },
+    sass-convert: {
+        files: {
+          src: ['sass/*.scss', 'sass/**/*.scss']
+        }
+    },
+  });
+
+  grunt.loadNpmTasks('grunt-concurrent');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-compass');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-sass-convert');
+  //grunt.loadNpmTasks('grunt-contrib-jshint');
+
+  grunt.registerTask('beauty', ['uglify:beauty', 'sass-convert']);
+  grunt.registerTask('watch', ['concurrent:compass', 'concurrent:ugly']);
+  grunt.registerTask('dev', ['uglify', 'compass:clean', 'compass:dev']);  // static command
+  grunt.registerTask('default', ['uglify', 'compass:clean', 'compass:prod' ]);  // static command
+
+};

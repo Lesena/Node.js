@@ -1,0 +1,15 @@
+watch: {
+  sass: {
+    files: 'dev/scss/{,*/}*.{scss,sass}',
+    tasks: ['sass:dev']
+  }
+},
+watch: {
+    scripts: {
+        files: ['js/*.js'],
+        tasks: ['concat', 'uglify'],
+        options: {
+            spawn: false,
+        },
+    } 
+},
